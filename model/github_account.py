@@ -2,41 +2,41 @@ import os, requests, subprocess
 import repository as repo
 import time
 
-class Github:
+class GithubAccount:
     def __init__(self):
-        self.__account_username = 'no name'
-        self.__repo_info = [] 
+        self.username = None
+        self.__repositories = [] 
 
     def __repr__(self):
-        return self.__account_username
+        return self.__username
 
     def __str__(self):
-        return self.__account_username
+        return self.__username
 
     def __len__(self):
-        len(self.__repo_info)
+        len(self.__repositories)
     
     def __iter__(self):
         while True:
-            yield self.__repo_info
+            yield self.__repositories
 
     @property
-    def account_username(self):
-        return self.__account_username
+    def username(self):
+        return self.__username
 
-    @account_username.setter
-    def account_username(self, account_username):
-        self.__account_username = account_username
+    @username.setter
+    def username(self, username):
+        self.__username = username
 
     @property
-    def repo_info(self):
-        return self.__repo_info
+    def repositories(self):
+        return self.__repositories
 
-    @repo_info.setter
-    def repo_info(self, repo_info):
-        self.__repo_info = repo_info
+    @repositories.setter
+    def repositories(self, repositories):
+        self.__repositories = repositories
 
-    def fetch_repo_info(self):
+    def fetch_repositories(self):
         '''
         # gets the full api from specified url and saves it in json format
         json_res = requests.get(f'https://api.github.com/users/{self.account_username}/repos').json()
@@ -44,21 +44,24 @@ class Github:
         print(json_res)
         
         # list comp which
-        self.repo_info = [repo.Repository(repository['name'], 
+        self.repositories = [repo.Repository(repository['name'], 
                                             repository['created_at'], 
                                             repository['updated_at'], 
                                             repository['language'], 
                                             repository['clone_url']) for repository in json_res]
         '''
 
-        self.repo_info = [repo.Repository(repository['id'],
+        self.repositories = [repo.Repository(repository['id'],
                                             repository['name'],  
                                             repository['created_at'], 
                                             repository['updated_at'], 
                                             repository['language'], 
-                                            repository['clone_url']) for repository in requests.get(f'https://api.github.com/users/{self.account_username}/repos').json()]
+                                            repository['clone_url']) for repository in requests.get(f'https://api.github.com/users/{self.username}/repos').json()]
 
 
+    def fetch_user_info(self):
+        pass
+    
     # generator function which returns a generator expression
     def repo_generator(self):
         # how it could be done
@@ -67,11 +70,11 @@ class Github:
             yield repository
         '''
         # how it should be done
-        return (r for r in self.repo_info) 
+        return (r for r in self.repositories) 
 
     # Measure which method of this and the one below is more effective
     def find_repo_normal(self, id):
-        for repository in self.repo_info:
+        for repository in self.repositories:
             if repository == id:
                 return repository
 

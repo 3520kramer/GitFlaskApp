@@ -10,8 +10,10 @@ class Repository:
         elif len(args) == 6:
             self.id = args[0]
             self.name = args[1]
-            self.created_at = datetime.strptime(f'{args[2][0:10]} {args[2][11:19]}', '%Y-%m-%d %H:%M:%S')
-            self.updated_at = datetime.strptime(f'{args[3][0:10]} {args[3][11:19]}', '%Y-%m-%d %H:%M:%S')
+            #self.created_at = datetime.strptime(f'{args[2][0:10]} {args[2][11:19]}', '%Y-%m-%d %H:%M:%S')
+            #self.updated_at = datetime.strptime(f'{args[3][0:10]} {args[3][11:19]}', '%Y-%m-%d %H:%M:%S')
+            self.created_at = args[2]
+            self.updated_at = args[3]
             self.language = args[4]
             self.clone_url = args[5]
 
@@ -20,6 +22,11 @@ class Repository:
 
     def __str__(self):
         return self.__name
+
+    # GREAT FOR EXAM
+    def __iter__(self):
+        for value in self.__dict__.values():
+            yield value          
     
     # makes it possible to compare two instances on a specific field. 
     # GREAT FOR EXAM!, example of python data model and magic methods
@@ -46,9 +53,14 @@ class Repository:
     def created_at(self):
         return self.__created_at
 
+    # research try/except and see if it can be used
     @created_at.setter
     def created_at(self, created_at):
-        self.__created_at = created_at
+        try:
+            self.__created_at = datetime.strptime(f'{created_at[0:10]} {created_at[11:19]}', '%Y-%m-%d %H:%M:%S')
+        except TypeError:
+            self.__created_at = created_at
+        
 
     @property
     def updated_at(self):
@@ -56,7 +68,11 @@ class Repository:
 
     @updated_at.setter
     def updated_at(self, updated_at):
-        self.__updated_at = updated_at
+        try:
+            self.__updated_at = datetime.strptime(f'{updated_at[0:10]} {updated_at[11:19]}', '%Y-%m-%d %H:%M:%S')
+        except TypeError:
+            self.__updated_at = updated_at
+        
 
     @property
     def language(self):
@@ -74,8 +90,6 @@ class Repository:
     def clone_url(self, clone_url):
         self.__clone_url = clone_url
 
-    
-
-'''
-repo1 = Repository(12, 'test', '2020-01-07T23:52:44Z', '2020-01-07T23:53:56Z', 'Java', 'www.test.dk')
-'''
+repo1=Repository()
+repo1.created_at = '2020-01-07T23:52:44Z'
+repo1.updated_at = '2020-01-07T23:52:44Z'

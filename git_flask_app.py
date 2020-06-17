@@ -5,8 +5,7 @@ import sys
 sys.path.append('/Users/kramer/Documents/DAT18b/4_semester/python/exam/GitFlask/model')
 
 from username_form import UsernameForm
-from user import User
-from github import Github
+from github_account import GithubAccount
 from repository import Repository
 from result_table import ResultTable
 from directory_table import DirectoryTable
@@ -15,8 +14,7 @@ from directory import Directory
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c390c9de932d68e83f5d7a81d85cb5ed' # prevents cross site forgery
 
-user = User()
-github = Github()
+github_account = GithubAccount()
 repository = Repository()
 directory = Directory()
 
@@ -33,27 +31,22 @@ def home_page():
 def result_page():
     form = UsernameForm()
     
-    # sets the username of the user
-    user.name = request.args.get('username')
-    
     # sets the account name to the name of the user
-    github.account_username = user.name
+    github_account.username = request.args.get('username')
     
-    github.fetch_repo_info()
-    table = ResultTable(github.repo_info)
+    github_account.fetch_repositories()
+    table = ResultTable(github_account.repositories)
     
-    return render_template('result.html', form=form, repo_info=github.repo_info, table=table)
+    return render_template('result.html', form=form, table=table)
 
 
 @app.route('/repository/<int:id>', methods=['GET', 'POST'])
 def repository_page(id):
     form = UsernameForm()
-    print(user.name)
     
     # sets the repository to be the one we want to clone
-    global repository
-    repository = github.find_repo_with_gen(id)
     
+    repository.id, repository.name, repository.created_at, repository.updated_at, repository.language, repository.clone_url = github_account.find_repo_with_gen(id)
     table = DirectoryTable(directory.content)
     
     return render_template('something.html', form=form, repo=repository, table=table)

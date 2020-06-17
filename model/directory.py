@@ -7,8 +7,12 @@ class Directory:
         self.current_dir = os.getcwd()
         self.content = os.listdir()
 
+    def __repr__(self):
+        return f'{self.__dict__}'
+
     def __add__(self, other):
         if os.path.lexists(os.path.join(other)):
+            os.chdir(other)
             return Directory()
         else:
             return self
@@ -41,3 +45,20 @@ class Directory:
     def go_one_dir_up(self):
         os.chdir('..')
         return Directory()
+
+d = Directory()
+'''
+for content in d.content:
+    if os.path.isfile(content):
+        
+        print(f'{content} is file')
+    else:
+        print(f'{content} is folder')
+'''
+os.getcwd()
+
+os.listdir()
+
+os.path.isfile('model')
+
+os.path.isdir('model')
