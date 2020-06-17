@@ -3,3 +3,5 @@ from wtforms import StringField, SubmitField, HiddenField
 
 class UsernameForm(FlaskForm):
     username = StringField('Username')
+
+#test
