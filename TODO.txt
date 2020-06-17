@@ -1,0 +1,4 @@
+1. create new route to repository/clone page
+2. create directory navigation
+3. scrape the web for github logo
+4. error handling for api limit

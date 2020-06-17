@@ -1,0 +1,27 @@
+{% extends 'boilerplate_layout.html'%}
+
+{% block content %}
+    <div class="content-section">
+        <h2>{{repo.name}}</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{category}}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <a href="{{ url_for('repository_command_route', command='one_up') }}">
+            <button class="form-button">Go One Directory Up</button>
+        </a>
+        <a href="{{ url_for('repository_command_route', command='clone_here') }}">
+            <button class="form-button">Clone Here</button>
+        </a>
+        <div class="table">
+            {{table}}
+        </div>
+    </div>
+{% endblock content %}

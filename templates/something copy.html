@@ -1,0 +1,33 @@
+{% extends 'boilerplate_layout.html'%}
+
+{% block content %}
+    <div class="content-section">
+        <h2>{{repo.name}}</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{category}}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <a href="{{ url_for('repository_command_page', id=repo.id, command='one_up') }}">
+        <button class="form-button">Flot Knap</button>
+        </a>
+        <form class="form-inline" method="POST" action="/back"> <!-- action is empty so it sends back to the same route-->
+            <div class="input-group">
+                {{back_form.submit(class_='form-button')}} <!-- add proper class to button -->
+            </div>
+        </form>
+        <form class="form-inline" method="POST" action="/"> <!-- action is empty so it sends back to the same route-->
+              <div class="input-group">
+                  {{clone_form.submit()}}
+              </div>
+          </form>
+        <div class="table">
+            {{table}}
+        </div>
+    </div>
+{% endblock content %}
