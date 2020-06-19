@@ -1,6 +1,5 @@
 import os, requests, subprocess
-import repository as repo
-import time
+import model.repository as repo
 
 class GithubAccount:
     def __init__(self):
@@ -14,7 +13,7 @@ class GithubAccount:
         return self.__username
 
     def __len__(self):
-        len(self.__repositories)
+        return len(self.__repositories)
     
     def __iter__(self):
         while True:

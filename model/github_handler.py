@@ -1,4 +1,4 @@
-from timer import timer_decorator
+from modules.timer import timer_decorator
 import subprocess, os
 from hurry.filesize import size
 

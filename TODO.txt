@@ -6,3 +6,5 @@ x. create repo
 x. push folder
 x. add files?
 4. error handling for api limit
+
+a way to display if you are in a directory which is a repository

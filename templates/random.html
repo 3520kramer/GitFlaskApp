@@ -1,3 +1,51 @@
 <a href="{{ url_for('repository_command_route', id=repo.id, command='one_up') }}">
     <button class="form-button">Go One Directory Up</button>
     </a>
+
+<!-- OLD HEADERS 
+  <header class="site-header">
+    <div class="container">
+      <form class="form-inline" method="GET" action="{{ url_for('result_page') }}"> <!-- url_for uses the route for the method result_page -->
+        <div class="input-group">
+            {{form.username(placeholder="Username")}}
+            
+            <input class="btn btn-outline-secondary bg-" type="submit" value="Find User">
+          </div>
+        </form>
+        
+      </div>
+  
+  
+  
+  
+      <!--<nav class="navbar navbar-expand-sm bg-dark navbar-dark">-->
+      <nav class="navbar navbar-expand-lg navbar-light style="background-color: #F8F8FF;">
+  
+        <div class="container">
+          <form class="form-inline" method="GET" action="{{ url_for('result_page') }}"> <!-- url_for uses the route for the method result_page-->
+            <!-- {{form.hidden_tag()}}  used to prevent cross site forgery-->
+              <div class="input-group">
+                  {{form.username(placeholder="Username", class="form-control mr-sm-2")}}
+                  
+                  <input class="btn bg-light"type="submit" value="Find User">
+              </div>
+          </form>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Active</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+          </ul>
+  
+        </div>
+      </nav>
+    </header>
+    -->

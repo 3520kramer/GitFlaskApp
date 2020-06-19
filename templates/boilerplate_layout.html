@@ -31,21 +31,43 @@
 
 </head>
 <body>
-  <header class="site-header">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-      <div class="container">
-        <form class="form-inline" method="GET" action="{{ url_for('result_page') }}"> <!-- url_for uses the route for the method result_page-->
-          <!-- {{form.hidden_tag()}}  used to prevent cross site forgery-->
-            <div class="input-group">
-                {{form.username(placeholder="Username")}}
-                
-                <input type="submit" value="Find User">
-            </div>
-        </form>
+  <!-- HEADER -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="{{url_for('home_page')}}">
+        <img src="{{ url_for('static', filename='selected_logo.png')}}" width="40" height="40" alt="">
+      </a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('home_page')}}"">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('change_logo_page')}}">Change Logo</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0" method="GET" action="{{ url_for('result_page') }}"> <!-- url_for uses the route for the method result_page-->
+        {{form.username(placeholder="Username", class="form-control mr-sm-2")}}
+        
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Find User</button>
+      </form>
+    </div>
+  </nav>
 
-      </div>
-    </nav>
-  </header>
+  
   <div class="container">
     {% block content %}
     

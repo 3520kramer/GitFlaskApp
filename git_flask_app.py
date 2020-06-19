@@ -1,17 +1,18 @@
 from flask import Flask, render_template, url_for, redirect, flash, request
 import time, subprocess
 
-import sys
-sys.path.append('/Users/kramer/Documents/DAT18b/4_semester/python/exam/GitFlask/model')
+# modules and classes created that needs to be imported
+from modules import file_manager
 
-from username_form import UsernameForm
-from result_table import ResultTable
-from directory_table import DirectoryTable
+from model.username_form import UsernameForm
+from model.result_table import ResultTable
+from model.directory_table import DirectoryTable
 
-from github_account import GithubAccount
-from github_handler import GithubHandler
-from repository import Repository
-from directory import Directory
+from model.github_account import GithubAccount
+from model.github_handler import GithubHandler
+from model.repository import Repository
+from model.directory import Directory
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c390c9de932d68e83f5d7a81d85cb5ed' # prevents cross site forgery
@@ -34,12 +35,16 @@ def home_page():
 @app.route('/user')
 def result_page():
     form = UsernameForm()
-    
+
     # sets the account name to the name of the user
     github_account.username = request.args.get('username')
     
     github_account.fetch_repositories()
     table = ResultTable(github_account.repositories)
+
+    if len(github_account)>0:
+        flash(f'Found {len(github_account)} of {github_account.username}\'s repositories', 'success')
+    
     
     return render_template('result.html', form=form, table=table)
 
@@ -84,53 +89,25 @@ def repository_command_route(command):
 
 
 
-@app.route('/repository/clone')
-def repository_clone_page():
+@app.route('/change_logo')
+def change_logo_page():
     form = UsernameForm()
 
-    # the form which contains the up button
-    back_form = BackForm()
-    
-    # the form which contains the clone button
-    clone_form = CloneForm()
-    
-    # 
-    if clone_form.validate_on_submit():
-        flash(f'Cloned repository to here', 'success')
-    else:
-        # TODO implement
-        #flash(f'Some failure', 'danger')
-        pass
 
-    table = DirectoryTable(directory.content)
+    file_manager.download_github_logos()
 
 
-    return render_template('something.html', form=form, repo=repository, table=table, clone_form=clone_form, back_form=back_form)
+    return render_template('change_logo.html', form=form)
 
+@app.route('/change_logo/<filename>')
+def change_logo_command_page(filename):
+    # TEMPORARY LOCATION
+    # FIGURE OUT WHERE TO PUT CONTEXTMANAGER AND LOGODOWNLOADER
+    import os
+    #os.remove(f'{os.getcwd()}/static/selected_logo.png')
+    os.rename(f'{os.getcwd()}/static/{filename}',f'{os.getcwd()}/static/selected_logo.png')
 
-@app.route('/back', methods=['POST'])
-def back():
-    back_form = BackForm()
-    if back_form.validate_on_submit():
-        #brug data fra form
-        pass
-    print('test')
-    print(directory.current_dir)
-    directory.go_one_dir_up()
-
-    return redirect(url_for('repository_clone_page'))
-
-@app.route('/repository/clone/<name>')
-def dir_selected(name):
-    global directory
-    directory += name
-    print('test')
-    print(directory.current_dir)
-    return redirect(url_for('repository_clone_page'))
-
-def clone_here():
-    pass
-
+    return redirect(url_for('change_logo_page'))
 
 @app.route('/test', methods=['GET', 'POST'])
 def testroute():

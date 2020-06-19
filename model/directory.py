@@ -1,5 +1,5 @@
 import os
-from directory_content import DirectoryContent
+from model.directory_content import DirectoryContent
 
 class Directory:
 
