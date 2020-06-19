@@ -58,7 +58,6 @@ class GithubAccount:
                                             repository['language'], 
                                             repository['clone_url']) for repository in requests.get(f'https://api.github.com/users/{self.username}/repos').json()]
 
-
     def fetch_user_info(self):
         pass
     

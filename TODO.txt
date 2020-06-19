@@ -1,4 +1,8 @@
-1. create new route to repository/clone page
-2. create directory navigation
+- 1. create new route to repository/clone page
+- 2. create directory navigation
+- x. create flash message
 3. scrape the web for github logo
+x. create repo
+x. push folder
+x. add files?
 4. error handling for api limit

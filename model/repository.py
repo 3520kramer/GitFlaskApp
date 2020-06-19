@@ -10,8 +10,6 @@ class Repository:
         elif len(args) == 6:
             self.id = args[0]
             self.name = args[1]
-            #self.created_at = datetime.strptime(f'{args[2][0:10]} {args[2][11:19]}', '%Y-%m-%d %H:%M:%S')
-            #self.updated_at = datetime.strptime(f'{args[3][0:10]} {args[3][11:19]}', '%Y-%m-%d %H:%M:%S')
             self.created_at = args[2]
             self.updated_at = args[3]
             self.language = args[4]

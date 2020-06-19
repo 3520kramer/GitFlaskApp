@@ -1,20 +1,24 @@
 from flask import Flask, render_template, url_for, redirect, flash, request
-import time
+import time, subprocess
 
 import sys
 sys.path.append('/Users/kramer/Documents/DAT18b/4_semester/python/exam/GitFlask/model')
 
 from username_form import UsernameForm
-from github_account import GithubAccount
-from repository import Repository
 from result_table import ResultTable
 from directory_table import DirectoryTable
+
+from github_account import GithubAccount
+from github_handler import GithubHandler
+from repository import Repository
 from directory import Directory
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c390c9de932d68e83f5d7a81d85cb5ed' # prevents cross site forgery
 
 github_account = GithubAccount()
+github_handler = GithubHandler()
+
 repository = Repository()
 directory = Directory()
 
@@ -43,26 +47,38 @@ def result_page():
 @app.route('/repository/<int:id>', methods=['GET', 'POST'])
 def repository_page(id):
     form = UsernameForm()
+
+    if directory.has_error_changing_dir:
+        flash(f'You are only allowed to change into folders', 'danger')
+
+    if github_handler.has_executed_command:
+        flash(f'Succesfully cloned {repository.name} of {github_handler.folder_size} in {github_handler.time_spend} seconds', 'success')
+        github_handler.has_executed_command = False
     
     # sets the repository to be the one we want to clone
-    
     repository.id, repository.name, repository.created_at, repository.updated_at, repository.language, repository.clone_url = github_account.find_repo_with_gen(id)
+    
     table = DirectoryTable(directory.content)
     
-    return render_template('something.html', form=form, repo=repository, table=table)
+    return render_template('repository.html', form=form, repo=repository, table=table)
 
 
 # NEW ROUTE FOR BACK BUTTON AND DIR LINK IN DIRECTORY TABLE'
 @app.route('/repository/<string:command>')
 def repository_command_route(command):
-    global directory
 
     if command == 'one_up':
-        directory = directory.go_one_dir_up()
+        directory.change_dir('..')
+
     elif command == 'clone_here':
-        pass
-    else:
-        directory += command
+        github_handler.time_spend = github_handler.clone_repo(repository.clone_url)
+        github_handler.folder_size = github_handler.find_size_of_folder(repository.name)
+        github_handler.has_executed_command = True
+
+    elif not command == '...': # Flask apparently tests the route by using '...',
+        # so to avoid errors we check if the command is other than that
+        directory.change_dir(command)
+        #directory += command
     
     return redirect(url_for('repository_page', id=repository.id))
 

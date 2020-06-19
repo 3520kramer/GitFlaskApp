@@ -1,12 +1,15 @@
 import time
 
 def timer_decorator(func):
-    def wrapper():
+    def wrapper(*args):
         start = time.time()
-        func()
+        func(*args)
         end = time.time()
-        print(end - start)
+        #print(end - start)
+        return (end-start)
     return wrapper
+
+
 
 @timer_decorator
 def looping():
