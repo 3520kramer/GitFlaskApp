@@ -4,7 +4,7 @@ from model.directory_content import DirectoryContent
 class Directory:
 
     def __init__(self):
-        self.current_dir = os.getcwd() # for debugging only
+        self.base_dir_path = os.getcwd()
         self.content = os.listdir()
         self.has_error_changing_dir = False
 
@@ -20,12 +20,12 @@ class Directory:
             return self
 
     @property
-    def current_dir(self):
-        return self.__current_dir
+    def base_dir_path(self):
+        return self.__base_dir_path
     
-    @current_dir.setter
-    def current_dir(self, current_dir):
-        self.__current_dir = current_dir
+    @base_dir_path.setter
+    def base_dir_path(self, base_dir_path):
+        self.__base_dir_path = base_dir_path
 
     @property
     def content(self):

@@ -1,8 +1,8 @@
 from flask import Flask, render_template, url_for, redirect, flash, request
-import time, subprocess
+import time, subprocess, os
 
 # modules and classes created that needs to be imported
-from modules import file_manager
+from modules.download_logos_web_crawler import download_github_logos
 
 from model.username_form import UsernameForm
 from model.result_table import ResultTable
@@ -90,24 +90,32 @@ def repository_command_route(command):
 
 
 @app.route('/change_logo')
-def change_logo_page():
+@app.route('/change_logo/changed/<changed>')
+def change_logo_page(changed=None):
     form = UsernameForm()
 
+    logo_urls = download_github_logos(directory.base_dir_path)
+    
+    if changed:
+        print('yes')
+        flash('Succesfully changed the logo. Hit refresh to see it', 'success')
 
-    file_manager.download_github_logos()
+    # generator
+    url_for_path_to_downloaded_logos = (url_for('static', filename=f'logo_{i}.png') for i in range(len(logo_urls)))
+    
+    # list comp
+    url_for_button_to_change_logo = [url_for('change_logo_command_page', filename=f'logo_{i}.png') for i in range(len(logo_urls))]
 
-
-    return render_template('change_logo.html', form=form)
+    return render_template('change_logo.html', form=form, enumerate=enumerate, 
+        url_for_path_to_downloaded_logos=url_for_path_to_downloaded_logos, 
+        url_for_button_to_change_logo=url_for_button_to_change_logo)
 
 @app.route('/change_logo/<filename>')
 def change_logo_command_page(filename):
-    # TEMPORARY LOCATION
-    # FIGURE OUT WHERE TO PUT CONTEXTMANAGER AND LOGODOWNLOADER
-    import os
-    #os.remove(f'{os.getcwd()}/static/selected_logo.png')
-    os.rename(f'{os.getcwd()}/static/{filename}',f'{os.getcwd()}/static/selected_logo.png')
+        
+    os.rename(f'{directory.base_dir_path}/static/{filename}',f'{directory.base_dir_path}/static/selected_logo.png')
 
-    return redirect(url_for('change_logo_page'))
+    return redirect(url_for('change_logo_page', changed='success'))
 
 @app.route('/test', methods=['GET', 'POST'])
 def testroute():
