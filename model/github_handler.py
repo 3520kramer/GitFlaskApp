@@ -92,7 +92,7 @@ class GithubHandler:
 
     @timer_decorator
     def push(self):
-        self.response_message_from_command = subprocess.check_output(['git', 'push'], stderr=subprocess.STDOUT).decode('utf-8').rstrip() #stderr=subprocess.STDOUT - sometimes it sends the 
+        self.response_message_from_command = subprocess.check_output(['git', 'push', 'origin', 'master'], stderr=subprocess.STDOUT).decode('utf-8').rstrip() #stderr=subprocess.STDOUT - sometimes it sends the 
 
     def fetch(self):
         subprocess.run(['git', 'fetch'])
