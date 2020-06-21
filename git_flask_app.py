@@ -54,6 +54,7 @@ def home_page():
         elif f'{os.getcwd().split("/")[-1]}.git' in github_handler.response_message_from_command:
             flash(f'Pushed \'{os.getcwd().split("/")[-1]}\' To GitHub In {github_handler.time_spend} seconds', 'success')
         else:
+            print('--')
             print(github_handler.response_message_from_command)
             flash(f'Maybe a merge confilt', 'danger')
 
