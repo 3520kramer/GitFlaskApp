@@ -56,8 +56,8 @@ def home_page():
         else:
             print('--')
             print(github_handler.response_message_from_command)
-            what = github_handler.response_message_from_command.split('\n')
-            print(what[0][-4:])
+            what = github_handler.response_message_from_command.split('\n')[0][-4:]
+            print(what)
             flash(f'Maybe a merge confilt', 'danger')
 
     elif github_handler.has_executed_command == 'git-fetch':
