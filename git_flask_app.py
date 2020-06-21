@@ -51,7 +51,7 @@ def home_page():
     elif github_handler.has_executed_command == 'git-push':
         if 'Everything up-to-date' in github_handler.response_message_from_command:
             flash(f'{github_handler.response_message_from_command}. Try adding and commiting first', 'info')
-        elif f'{os.getcwd().split("/")[-1]}.git' in github_handler.response_message_from_command:
+        elif '.git' in github_handler.response_message_from_command.split('\n')[0][-4:]:
             flash(f'Pushed \'{os.getcwd().split("/")[-1]}\' To GitHub In {github_handler.time_spend} seconds', 'success')
         else:
             print('--')
