@@ -77,7 +77,6 @@ class Directory:
         try:
             os.chdir(path)
             self.content = os.listdir()
-            self.has_error_changing_dir = False
             self.has_git_init = self.check_git_init()
 
         except NotADirectoryError or FileNotFoundError:

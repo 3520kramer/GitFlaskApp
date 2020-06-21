@@ -35,6 +35,8 @@ def home_page():
 
     if directory.has_error_changing_dir:
         flash(f'You are only allowed to change into folders', 'danger')
+        directory.has_error_changing_dir = False
+
 
     if github_handler.has_executed_command == 'git-pull':
         if github_handler.folder_size['difference'] > 0:
@@ -126,6 +128,8 @@ def repository_page(id):
 
     if directory.has_error_changing_dir:
         flash(f'You are only allowed to change into folders', 'danger')
+        directory.has_error_changing_dir = False
+
 
     if github_handler.has_executed_command:
         flash(f'Succesfully cloned {repository.name} of {(format_size(github_handler.folder_size))} in {github_handler.time_spend} seconds', 'success')
