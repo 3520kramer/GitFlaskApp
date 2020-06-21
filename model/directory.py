@@ -1,5 +1,6 @@
 import os
-from model.directory_content import DirectoryContent
+
+from directory_content import DirectoryContent
 
 class Directory:
 
@@ -7,6 +8,7 @@ class Directory:
         self.base_dir_path = os.getcwd()
         self.content = os.listdir()
         self.has_error_changing_dir = False
+        self.has_git_init = self.check_git_init()
 
     def __repr__(self):
         return f'{self.__dict__}'
@@ -43,9 +45,12 @@ class Directory:
                 temp.append(DirectoryContent(dir_content, True))
             else:
                 temp.append(DirectoryContent(dir_content, False))
+
+        temp.sort(key=lambda x: x.is_dir, reverse=True)
+        #temp.insert(0, DirectoryContent('..', None))
             
         self.__content = temp
-
+    
     @property
     def has_error_changing_dir(self):
         return self.__has_error_changing_dir
@@ -54,12 +59,27 @@ class Directory:
     def has_error_changing_dir(self, has_error_changing_dir):
         self.__has_error_changing_dir = has_error_changing_dir
     
+    @property
+    def has_git_init(self):
+        return self.__has_git_init
+
+    @has_git_init.setter
+    def has_git_init(self, has_git_init):
+        self.__has_git_init = has_git_init
+
+    def check_git_init(self):
+        if '.git' in os.listdir():
+            return True
+        else:
+            return False
+
     def change_dir(self, path):
         try:
             os.chdir(path)
-            print(os.getcwd())
             self.content = os.listdir()
             self.has_error_changing_dir = False
+            self.has_git_init = self.check_git_init()
+
         except NotADirectoryError or FileNotFoundError:
             print('ERROR: Could not change directory!')
             self.has_error_changing_dir = True
@@ -73,6 +93,17 @@ class Directory:
             self.has_error_changing_dir = True'''
 
 d = Directory()
+'''
+temp = []
+temp.append(DirectoryContent('mappe', True))
+temp.append(DirectoryContent('mappe2', True))
+temp.append(DirectoryContent('mappe3', True))
+temp.append(DirectoryContent('fil1', False))
+temp.append(DirectoryContent('fil2', False))
+
+temp.sort(key=lambda x: x.is_dir, reverse=True)
+temp.insert(0, DirectoryContent('..', None))
+'''
 '''
 for content in d.content:
     if os.path.isfile(content):

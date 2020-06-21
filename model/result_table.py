@@ -1,9 +1,9 @@
 from flask_table import Table, Col, DatetimeCol, ButtonCol
 
 class ResultTable(Table):
+    classes = ['table', 'table-light', 'table-bordered', 'thead-light']
     
-
-    id = Col('ID') #, show=False
+    id = Col('ID', show=False)
     name = Col('Name')
     created_at = DatetimeCol('Created At', datetime_format="dd/MM-YYYY hh:mm:ss")
     updated_at = DatetimeCol('Updated At', datetime_format="dd/MM-YYYY hh:mm:ss")

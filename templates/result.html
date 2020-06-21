@@ -1,20 +1,17 @@
 {% extends 'boilerplate_layout.html'%}
 
 {% block content %}
-    <div class="content-section">
-        
-        <h2>RESULT</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{category}}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <div class="table">
-            {{table}}
-        </div>
+    <div class="space-over-row"></div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="table">
+        {{table}}
     </div>
 {% endblock content %}

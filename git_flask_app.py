@@ -1,18 +1,22 @@
 from flask import Flask, render_template, url_for, redirect, flash, request
 import time, subprocess, os
 
+import sys
+sys.path.append('/Users/kramer/Documents/DAT18b/4_semester/python/exam/GitFlask/model')
+sys.path.append('/Users/kramer/Documents/DAT18b/4_semester/python/exam/GitFlask/modules')
+
 # modules and classes created that needs to be imported
 from modules.download_logos_web_crawler import download_github_logos
+from modules.formatter import format_size
 
 from model.username_form import UsernameForm
 from model.result_table import ResultTable
-from model.directory_table import DirectoryTable
+from model.directory_table import DirectoryTable, DirectoryTableForClone
 
 from model.github_account import GithubAccount
 from model.github_handler import GithubHandler
 from model.repository import Repository
 from model.directory import Directory
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c390c9de932d68e83f5d7a81d85cb5ed' # prevents cross site forgery
@@ -29,8 +33,71 @@ directory = Directory()
 def home_page():
     form = UsernameForm()
 
-    return render_template('home.html', form=form) 
+    if directory.has_error_changing_dir:
+        flash(f'You are only allowed to change into folders', 'danger')
 
+    if github_handler.has_executed_command == 'git-pull':
+        if github_handler.folder_size['difference'] > 0:
+            flash(f'Pull Succesful! Elements of {format_size(github_handler.folder_size["difference"])} was added to the local repository which is now a total of {format_size(github_handler.folder_size["end_size"])}', 'success')
+        elif github_handler.folder_size['difference'] < 0:
+            flash(f'Pull Succesful! Elements of {format_size(github_handler.folder_size["difference"]*-1)} was removed from the local repository which is now a total of {format_size(github_handler.folder_size["end_size"])}', 'success')
+        else:
+            flash(f'Already up to date', 'info')
+    
+    elif github_handler.has_executed_command == 'git-add-commit':
+        flash(f'{github_handler.response_message_from_command}', 'success')
+
+
+    elif github_handler.has_executed_command == 'git-push':
+        if 'Everything up-to-date' in github_handler.response_message_from_command:
+            flash(f'{github_handler.response_message_from_command}. Try adding and commiting first', 'info')
+        elif f'{os.getcwd().split("/")[-1]}.git' in github_handler.response_message_from_command:
+            flash(f'Pushed \'{os.getcwd().split("/")[-1]}\' To GitHub In {github_handler.time_spend} seconds', 'success')
+        else:
+            flash(f'Maybe a merge confilt', 'danger')
+
+    elif github_handler.has_executed_command == 'git-fetch':
+            flash(f'Fetch Succesful', 'success')
+
+    github_handler.has_executed_command = False
+
+    table = DirectoryTable(directory.content)
+
+    return render_template('home.html', title='Home', form=form, table=table, directory=directory) 
+
+@app.route('/<command>')
+def github_command_route(command):
+    print(command)
+    if command == 'one_up':
+        directory.change_dir('..')
+
+    elif command == 'git-pull':
+        github_handler.folder_size = github_handler.pull()
+        
+        github_handler.has_executed_command = command
+        directory.content = os.listdir() # updates the content to reflect pull changes
+    
+    elif command == 'git-add-commit':
+        github_handler.add_commit()
+
+        github_handler.has_executed_command = command
+
+    elif command == 'git-push':
+        github_handler.time_spend = github_handler.push()
+        
+        github_handler.has_executed_command = command
+
+    elif command == 'git-fetch':
+        github_handler.fetch()
+        
+        github_handler.has_executed_command = command
+
+    elif not command == '...':
+        # Flask apparently tests the route by using '...',
+        # so to avoid errors we check if the command is other than that
+        directory.change_dir(command)
+        
+    return redirect(url_for('home_page'))
 
 @app.route('/user')
 def result_page():
@@ -46,7 +113,7 @@ def result_page():
         flash(f'Found {len(github_account)} of {github_account.username}\'s repositories', 'success')
     
     
-    return render_template('result.html', form=form, table=table)
+    return render_template('result.html', title='Results', form=form, table=table)
 
 
 @app.route('/repository/<int:id>', methods=['GET', 'POST'])
@@ -57,15 +124,15 @@ def repository_page(id):
         flash(f'You are only allowed to change into folders', 'danger')
 
     if github_handler.has_executed_command:
-        flash(f'Succesfully cloned {repository.name} of {github_handler.folder_size} in {github_handler.time_spend} seconds', 'success')
+        flash(f'Succesfully cloned {repository.name} of {(format_size(github_handler.folder_size))} in {github_handler.time_spend} seconds', 'success')
         github_handler.has_executed_command = False
     
     # sets the repository to be the one we want to clone
     repository.id, repository.name, repository.created_at, repository.updated_at, repository.language, repository.clone_url = github_account.find_repo_with_gen(id)
     
-    table = DirectoryTable(directory.content)
+    table = DirectoryTableForClone(directory.content)
     
-    return render_template('repository.html', form=form, repo=repository, table=table)
+    return render_template('repository.html', title=f'Clone \'{repository.name}\' to Folder...', form=form, repo=repository, table=table, directory=directory)
 
 
 # NEW ROUTE FOR BACK BUTTON AND DIR LINK IN DIRECTORY TABLE'
@@ -88,7 +155,6 @@ def repository_command_route(command):
     return redirect(url_for('repository_page', id=repository.id))
 
 
-
 @app.route('/change_logo')
 @app.route('/change_logo/changed/<changed>')
 def change_logo_page(changed=None):
@@ -106,7 +172,7 @@ def change_logo_page(changed=None):
     # list comp
     url_for_button_to_change_logo = [url_for('change_logo_command_page', filename=f'logo_{i}.png') for i in range(len(logo_urls))]
 
-    return render_template('change_logo.html', form=form, enumerate=enumerate, 
+    return render_template('change_logo.html', title='Change Logo', form=form, enumerate=enumerate, 
         url_for_path_to_downloaded_logos=url_for_path_to_downloaded_logos, 
         url_for_button_to_change_logo=url_for_button_to_change_logo)
 
@@ -116,10 +182,6 @@ def change_logo_command_page(filename):
     os.rename(f'{directory.base_dir_path}/static/{filename}',f'{directory.base_dir_path}/static/selected_logo.png')
 
     return redirect(url_for('change_logo_page', changed='success'))
-
-@app.route('/test', methods=['GET', 'POST'])
-def testroute():
-    return render_template('test.html')
 
 
 # makes it runnable from python by typing 'python git_flask_app.py' in terminal

@@ -1,18 +1,74 @@
 {% extends 'boilerplate_layout.html'%}
 
 {% block content %}
-    <div class="content-section">
-        <h2>{{repo.name}}</h2>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{category}}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row space-over-row">
+        <div class="col-6 d-flex justify-content-center">
+            <a href="{{ url_for('repository_command_route', command='one_up') }}">
+                <button class="btn btn-primary">Go One Directory Up</button>
+            </a>
+        </div>
+        
+        <div class="col-1"></div>
+    
+        <div class="col-5">
+            <div class="content-section">
+                <h3>{{repo.name}}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row space-over-row">
+        
+        <div class="col-6">
+            <div class="table d-flex justify-content-center">
+                {{table}}
+            </div>
+        </div>
+        <div class="col-1">
+            
+        </div>
+    
+        <div class="col-5">
+            <div class="content-section">
+                
+                <h5 class="text-muted"> </h5>
+                {% if directory.has_git_init %}
+                    <h5 class='text-muted'>Current Directory is a Repository</h1>
+                {% else %}
+                    <h5 class='text-muted'>Current Directory is not a Repository</h1>
+                {% endif %}
+                <p class='text-muted'>
+                    <div class="list-group">
+                        <a href="{{ url_for('repository_command_route', command='clone_here') }}" style="text-decoration: none;"class="list-group-item list-group-item-primary {% if directory.has_git_init %} disabled {% else%} succes {% endif %}">
+                            Clone here
+                        </a>
+                        <p></p>
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item"> {{ repo.name}}</li>
+                            <li class="list-group-item list-group-item"> Created at {{ repo.created_at}}</li>
+                            <li class="list-group-item list-group-item"> Updated at {{ repo.updated_at}}</li>
+                            <li class="list-group-item list-group-item"> {{ repo.language}}</li>
+                        </ul>
+                    </div>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+
+
+
 
         <a href="{{ url_for('repository_command_route', command='one_up') }}">
             <button class="form-button">Go One Directory Up</button>

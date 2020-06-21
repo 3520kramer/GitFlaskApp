@@ -1,0 +1,20 @@
+.my-sidebar {
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+}
+
+.space-over-row { 
+    margin-top: 15px;
+}
+
+.my-image{
+    width: 50px;
+    height: auto;
+}
+
+.my-table{
+    border: 1px solid black;
+}

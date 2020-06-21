@@ -49,3 +49,46 @@
       </nav>
     </header>
     -->
+
+
+
+    <div class="row space-over-row">
+      <div class="col-7 d-flex justify-content-center">
+          <a href="{{ url_for('github_command_route', command='one_up') }}">
+              <button class="btn btn-primary">Go One Directory Up</button>
+          </a>
+          <br>
+          <div class="table table-hover">
+              {{table}}
+          </div>
+      </div>
+  
+      <div class="col-5">
+          <div class="content-section">
+              <h3>GitHub Options</h3>
+              {% if directory.has_git_init %}
+                  <h5 class='text-muted'>Current Directory is a Repository</h1>
+              {% else %}
+                  <h5 class='text-muted'>Current Directory is not a Repository</h1>
+              {% endif %}
+              <p class='text-muted'>
+                  <div class="list-group">
+  
+                      <a href="{{ url_for('github_command_route', command='add-all') }}" class="list-group-item list-group-item-action disabled">
+                          Add Current Folder To Commit
+                      </a>
+                      <a href="#" class="list-group-item list-group-item-action disabled">
+                          Commit Without Message
+                      </a>
+  
+                      <a href="{{ url_for('github_command_route', command='add-commit') }}" class="list-group-item list-group-item-action">
+                          Add Everything and Commit
+                      </a>
+                      <a href="#" class="list-group-item list-group-item-action">Push</a>
+                      <a href="{{ url_for('github_command_route', command='git-pull') }}" class="list-group-item list-group-item-action">Pull</a>
+                      <a href="#" class="list-group-item list-group-item-action">Fetch</a>
+                  </div>
+              </p>
+          </div>
+      </div>
+  </div>

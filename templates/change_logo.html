@@ -1,7 +1,7 @@
 {% extends 'boilerplate_layout.html'%}
 
 {% block content %}
-    <h2>CHANGE LOGO</h2>
+    <div class="space-over-row"></div>  
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
             {% for category, message in messages %}
@@ -12,30 +12,25 @@
         {% endif %}
     {% endwith %}
     
-    
-    
+
         {% for index, url_for_logo in enumerate(url_for_path_to_downloaded_logos)  %}
-        <div class="row">
-            <div class="col-4"></div>
-            <div class="col-sm">
-                <img src="{{url_for_logo}}" class="img-fluid">
-                <p></p>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-sm">
+                    <img src="{{url_for_logo}}" class="img-fluid">
+                    <p></p>
+                </div>
+                <div class="col-4"></div>
             </div>
-            <div class="col-4"></div>
-        </div>
-        <div class="row">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col text-center">
+                    <a href="{{ url_for_button_to_change_logo[index] }}">
+                        <button class="btn btn-primary">Choose Logo</button>
+                    </a>
+                    <hr/>
+                </div>
             <div class="col-3"></div>
-            <div class="col text-center">
-                <a href="{{ url_for_button_to_change_logo[index] }}">
-                    <button class="form-button">Choose Logo</button>
-                </a>
-                <hr/>
             </div>
-            <div class="col-3"></div>
-            
-        </div>
-        
         {% endfor %}
-    
-    
 {% endblock content %}

@@ -2,9 +2,14 @@
 - 2. create directory navigation
 - x. create flash message
 - 3. scrape the web for github logo
-x. create repo
-x. push folder
-x. add files?
+- x. a way to display if you are in a directory which is a repository
+- x. pull 
+- x. decorator which measures size before and after pull CLOSE TO DONE! (NEEDS TESTING)
+- x. sort table
+- x. add and commit files - ALMOST DONE, MIGHT NEED A DECORATOR AND SOME STYLING ON THE FLASH MESSAGE
+- x. push folder - timer decorator?
+- x. fetch
+x. create repo / git init
 4. error handling for api limit
 
-a way to display if you are in a directory which is a repository
+
